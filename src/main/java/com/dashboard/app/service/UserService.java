@@ -33,9 +33,30 @@ public class UserService {
                 .email("maria@gmail.com")
                 .role(UserRole.ADMIN)
                 .build();
+        User user3 = User
+                .builder()
+                .name("Pedro")
+                .email("pedro@gmail.com")
+                .role(UserRole.ADMIN)
+                .build();
+        User user4 = User
+                .builder()
+                .name("Daniel")
+                .email("daniel@gmail.com")
+                .role(UserRole.USER)
+                .build();
+        User user5 = User
+                .builder()
+                .name("Jhon")
+                .email("jhon@gmail.com")
+                .role(UserRole.USER)
+                .build();
 
         userRepository.save(user1);
         userRepository.save(user2);
+        userRepository.save(user3);
+        userRepository.save(user4);
+        userRepository.save(user5);
     }
 
     public List<User> getAllUsers(){
