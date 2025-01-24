@@ -49,4 +49,19 @@ public class UserController {
         User savedUser = userService.createUser(userToSave);
         return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toDto(savedUser));
     }
+
+    @Operation(summary = "Update an existing user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @PutMapping("/user/{id}")
+    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @Valid @RequestBody UserDto userDto) {
+        //validate user exists
+        userService.getUserById(id);
+        userDto.setId(id);
+        User updatedUser = userService.updateUser(userMapper.toModel(userDto));
+        return ResponseEntity.ok(userMapper.toDto(updatedUser));
+    }
 }

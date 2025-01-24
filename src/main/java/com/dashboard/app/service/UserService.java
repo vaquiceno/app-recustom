@@ -1,6 +1,7 @@
 package com.dashboard.app.service;
 
 import com.dashboard.app.enums.UserRole;
+import com.dashboard.app.exception.AppException;
 import com.dashboard.app.model.User;
 import com.dashboard.app.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
@@ -64,6 +65,18 @@ public class UserService {
     }
 
     public User createUser(User user){
+        return userRepository.save(user);
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new AppException("User not found with id: " + id));
+    }
+
+    public User updateUser(User user) {
+        if (user.getId() == null) {
+            throw new AppException("User ID is required for update");
+        }
         return userRepository.save(user);
     }
 }
