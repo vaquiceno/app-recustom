@@ -64,4 +64,18 @@ public class UserController {
         User updatedUser = userService.updateUser(userMapper.toModel(userDto));
         return ResponseEntity.ok(userMapper.toDto(updatedUser));
     }
+
+    @Operation(summary = "Delete a user by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "User deleted successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        // Validate user exists
+        userService.getUserById(id);
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
 }
