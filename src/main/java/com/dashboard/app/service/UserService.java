@@ -2,11 +2,14 @@ package com.dashboard.app.service;
 
 import com.dashboard.app.enums.UserRole;
 import com.dashboard.app.exception.AppException;
+import com.dashboard.app.model.Log;
 import com.dashboard.app.model.User;
+import com.dashboard.app.repository.LogRepository;
 import com.dashboard.app.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,10 +17,12 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final LogRepository logRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, LogRepository logRepository) {
         this.userRepository = userRepository;
+        this.logRepository = logRepository;
     }
 
     @PostConstruct
@@ -65,7 +70,15 @@ public class UserService {
     }
 
     public User createUser(User user){
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        Log newLog = Log
+                .builder()
+                .user(savedUser)
+                .numberOfLoggings(0)
+                .numberOfDownloads(0)
+                .build();
+        logRepository.save(newLog);
+        return savedUser;
     }
 
     public User getUserById(Long id) {
@@ -80,7 +93,9 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
     public void deleteUser(Long userId) {
+        logRepository.deleteByUser_Id(userId);
         userRepository.deleteById(userId);
     }
 }
